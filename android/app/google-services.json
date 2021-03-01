@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "650583981066",
+    "project_id": "sevenbutlers-43775",
+    "storage_bucket": "sevenbutlers-43775.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:650583981066:android:25221388e8bc7badbab3f3",
+        "android_client_info": {
+          "package_name": "com.gibeon.sevenbutlers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "650583981066-q5j55lsnrmk9o5cn6ljfbcbc675ar8f8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gibeon.sevenbutlers",
+            "certificate_hash": "4a9530ec15d34711952280ce190ee787f821e0a5"
+          }
+        },
+        {
+          "client_id": "650583981066-fs24hfgmc7tgiua0onrnohjfk07n7kpb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVI6dEzwhpEetxGbrXEK3c2X_HHHqqzcE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "650583981066-fs24hfgmc7tgiua0onrnohjfk07n7kpb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
