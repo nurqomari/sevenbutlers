@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
@@ -9,6 +10,10 @@ import 'package:sevenbutlers/ui/login/events/login_bloc.dart';
 import 'package:sevenbutlers/ui/login/events/login_state.dart';
 import 'package:sevenbutlers/utils/helpers/hex_color.dart';
 import 'package:sevenbutlers/utils/services/session_manager.dart';
+
+import '../../utils/mixins/validators.dart';
+import '../../utils/mixins/validators.dart';
+import '../../utils/mixins/validators.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -223,12 +228,21 @@ class _LoginScreenState extends State<LoginScreen> {
                           String password = _passwordInputController.text
                               .replaceAll(RegExp(r"\s+\b|\b\s"), "");
 
-                          //remove white space on text form field
-                          _emailInputController.text = email;
-                          _passwordInputController.text = password;
+                          String matchEmail = validateEmail(email);
+                          String matchPassword = validatePassword(password);
 
-                          print("email: $email, password: $password");
-                          loginBloc.attemptLogin(email, password);
+                          /*run email and password char checking.*/
+                          if(matchEmail == "matched" && matchPassword == "matched"){
+                            //remove white space on text form field
+                            _emailInputController.text = email;
+                            _passwordInputController.text = password;
+
+                            log("email: $email, password: $password");
+                            loginBloc.attemptLogin(email, password);
+                          }else{
+                            /*do something when the check result didn't pass*/
+                            log("email or password didn't meet the requirement");
+                          }
                         },
                         textColor: Colors.white,
                         color: Colors.black,
