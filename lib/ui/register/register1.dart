@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:sevenbutlers/utils/helpers/hex_color.dart';
@@ -32,11 +34,17 @@ class _Register1State extends State<Register1> {
       autofocus: false,
       obscureText: true,
       validator: (String value) {
+        log(value);
         if (value.isEmpty) {
           return "Please enter password";
         } else {
-          // return validatePassword(value);
+          String passwordCheck = validatePassword(value);
+
+          if(passwordCheck != "matched"){
+            return passwordCheck;
+          }
         }
+        return null;
       },
       onSaved: (value) => _password = value,
       decoration: buildInputDecoration("Password"),
@@ -49,6 +57,12 @@ class _Register1State extends State<Register1> {
       validator: (String value) {
         if (value.isEmpty) {
           return 'Please re-enter password';
+        }else{
+          String passwordCheck = validatePassword(value);
+
+          if(passwordCheck != "matched"){
+            return passwordCheck;
+          }
         }
         if (password.text != confirmpassword.text) {
           return "Password does not match";
