@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sevenbutlers/ui/register/events/register_bloc.dart';
@@ -7,8 +9,8 @@ import "package:sevenbutlers/utils/mixins/validators.dart";
 import 'package:sevenbutlers/widgets/widgets.dart';
 
 class Register2 extends StatefulWidget {
-  final String username, password;
-  Register2({Key key, @required this.username, this.password})
+  final String username, firstname, lastname;
+  Register2({Key key, @required this.username, this.firstname, this.lastname})
       : super(key: key);
 
   @override
@@ -17,7 +19,7 @@ class Register2 extends StatefulWidget {
 
 class _Register2State extends State<Register2> {
   final formKey = new GlobalKey<FormState>();
-  String _username, _password, _email, _firstname, _surname;
+  String _username, _password, _email, _firstname, _surname, _confirmpassword;
   RegistrationBloc registrationBloc;
 
   @override
@@ -29,8 +31,12 @@ class _Register2State extends State<Register2> {
   @override
   Widget build(BuildContext context) {
     _username = widget.username;
-    _password = widget.password;
-    // AuthProvider auth = Provider.of<AuthProvider>(context);
+    _firstname = widget.firstname;
+    _surname = widget.lastname;
+
+    //TextController to read text entered in text field
+    TextEditingController password = TextEditingController();
+    TextEditingController confirmpassword = TextEditingController();
 
     final emailField = TextFormField(
       autofocus: false,
@@ -44,27 +50,43 @@ class _Register2State extends State<Register2> {
       decoration: buildInputDecoration("Email Address"),
     );
 
-    final firstnameField = TextFormField(
+    final passwordField = TextFormField(
+      controller: password,
       autofocus: false,
-      validator: (value) =>
-          value.isEmpty ? "Please enter your first name" : null,
-      onSaved: (value) => _firstname = value,
-      decoration: buildInputDecoration("First name"),
+      obscureText: true,
+      validator: (String value) {
+        log(value);
+        if (value.isEmpty) {
+          return "Please enter password";
+        } else {
+          String passwordCheck = validatePassword(value);
+
+          if (passwordCheck != "matched") {
+            return passwordCheck;
+          }
+        }
+        return null;
+      },
+      onSaved: (value) => _password = value,
+      decoration: buildInputDecoration("Password"),
     );
 
-    final surnameField = TextFormField(
+    final confirmpasswordField = TextFormField(
+      controller: confirmpassword,
       autofocus: false,
-      validator: (value) => value.isEmpty ? "Please enter your surname" : null,
-      onSaved: (value) => _surname = value,
-      decoration: buildInputDecoration("Surname"),
+      obscureText: true,
+      validator: (String value) {
+        if (value.isEmpty) {
+          return 'Please re-enter password';
+        }
+        if (password.text != confirmpassword.text) {
+          return "Password does not match";
+        }
+        return null;
+      },
+      onSaved: (value) => _confirmpassword = value,
+      decoration: buildInputDecoration("Confirm Password"),
     );
-
-    var submit = () {
-      final form = formKey.currentState;
-      if (form.validate()) {
-        form.save();
-      }
-    };
 
     return SafeArea(
         child: Scaffold(
@@ -99,7 +121,7 @@ class _Register2State extends State<Register2> {
                                 ))),
                       ],
                     ),
-                    SizedBox(height: 80),
+                    SizedBox(height: 60),
                     Center(
                       child: Text(
                         "Register",
@@ -111,7 +133,7 @@ class _Register2State extends State<Register2> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    SizedBox(height: 60.0),
+                    SizedBox(height: 40.0),
                     Text(
                       "Email",
                       style: TextStyle(
@@ -123,9 +145,9 @@ class _Register2State extends State<Register2> {
                     SizedBox(height: 20.0),
                     emailField,
                     SizedBox(height: 20.0),
-                    firstnameField,
+                    passwordField,
                     SizedBox(height: 20.0),
-                    surnameField,
+                    confirmpasswordField,
                     SizedBox(height: 20.0),
                     Center(
                       child: Visibility(
@@ -145,6 +167,47 @@ class _Register2State extends State<Register2> {
                               fontWeight: FontWeight.w600),
                         ),
                       ),
+                    ),
+                    Text(
+                      "Your password must have:",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 12,
+                          fontFamily: "Montserrat",
+                          fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(height: 3.0),
+                    Row(
+                      children: [
+                        Icon(Icons.check_circle_outline_rounded, size: 9.6),
+                        SizedBox(width: 10),
+                        Text(
+                          "8 to 20 characters",
+                          style: TextStyle(
+                              color: HexColor('#c7c7c7'),
+                              fontSize: 12,
+                              fontFamily: "Montserrat",
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 3.0),
+                    Row(
+                      children: [
+                        Icon(Icons.check_circle_outline_rounded, size: 9.6),
+                        SizedBox(width: 10),
+                        Text(
+                          "Letter, number and special characters",
+                          style: TextStyle(
+                              color: HexColor('#c7c7c7'),
+                              fontSize: 12,
+                              fontFamily: "Montserrat",
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment
@@ -229,20 +292,22 @@ class _Register2State extends State<Register2> {
                     Center(
                       child: MaterialButton(
                         onPressed: () {
-                          submit();
-                          String firstname =
-                              _firstname.replaceAll(RegExp(r"\s+\b|\b\s"), "");
-                          String lastname =
-                              _surname.replaceAll(RegExp(r"\s+\b|\b\s"), "");
-                          String email =
-                              _email.replaceAll(RegExp(r"\s+\b|\b\s"), "");
-                          String password =
-                              _password.replaceAll(RegExp(r"\s+\b|\b\s"), "");
+                          if (formKey.currentState.validate()) {
+                            formKey.currentState.save();
+                            String firstname = _firstname.replaceAll(
+                                RegExp(r"\s+\b|\b\s"), "");
+                            String lastname =
+                                _surname.replaceAll(RegExp(r"\s+\b|\b\s"), "");
+                            String email =
+                                _email.replaceAll(RegExp(r"\s+\b|\b\s"), "");
+                            String password =
+                                _password.replaceAll(RegExp(r"\s+\b|\b\s"), "");
 
-                          print(
-                              "firstname: $firstname, lastname: $lastname, email: $email, password: $password");
-                          registrationBloc.attemptRegister(
-                              firstname, lastname, email, password);
+                            print(
+                                "firstname: $firstname, lastname: $lastname, email: $email, password: $password");
+                            registrationBloc.attemptRegister(
+                                firstname, lastname, email, password);
+                          }
                         },
                         textColor: Colors.white,
                         color: Colors.black,
@@ -264,7 +329,7 @@ class _Register2State extends State<Register2> {
                                 BorderRadius.all(Radius.circular(10))),
                       ),
                     ),
-                    SizedBox(height: 80),
+                    SizedBox(height: 40),
                     Row(
                       children: [
                         Padding(

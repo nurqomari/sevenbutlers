@@ -63,7 +63,8 @@ class RouteGenerator {
                   create: (BuildContext context) => RegistrationBloc(),
                   child: Register2(
                     username: args['username'],
-                    password: args['password'],
+                    firstname: args['firstname'],
+                    lastname: args['lastname'],
                   )));
         return _errorRoute();
 

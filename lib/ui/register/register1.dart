@@ -1,6 +1,4 @@
 import 'dart:developer';
-
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:sevenbutlers/utils/helpers/hex_color.dart';
 import 'package:sevenbutlers/utils/mixins/validators.dart';
@@ -14,11 +12,7 @@ class Register1 extends StatefulWidget {
 class _Register1State extends State<Register1> {
   final formKey = new GlobalKey<FormState>();
 
-  String _username, _password, _confirmpassword;
-
-  //TextController to read text entered in text field
-  TextEditingController password = TextEditingController();
-  TextEditingController confirmpassword = TextEditingController();
+  String _username, _firstname, _surname;
 
   @override
   Widget build(BuildContext context) {
@@ -29,56 +23,30 @@ class _Register1State extends State<Register1> {
       decoration: buildInputDecoration("Username"),
     );
 
-    final passwordField = TextFormField(
-      controller: password,
+    final firstnameField = TextFormField(
       autofocus: false,
-      obscureText: true,
-      validator: (String value) {
-        log(value);
-        if (value.isEmpty) {
-          return "Please enter password";
-        } else {
-          String passwordCheck = validatePassword(value);
-
-          if(passwordCheck != "matched"){
-            return passwordCheck;
-          }
-        }
-        return null;
-      },
-      onSaved: (value) => _password = value,
-      decoration: buildInputDecoration("Password"),
+      validator: (value) =>
+          value.isEmpty ? "Please enter your first name" : null,
+      onSaved: (value) => _firstname = value,
+      decoration: buildInputDecoration("First name"),
     );
 
-    final confirmpasswordField = TextFormField(
-      controller: confirmpassword,
+    final surnameField = TextFormField(
       autofocus: false,
-      obscureText: true,
-      validator: (String value) {
-        if (value.isEmpty) {
-          return 'Please re-enter password';
-        }
-        if (password.text != confirmpassword.text) {
-          return "Password does not match";
-        }
-        return null;
-      },
-      onSaved: (value) => _confirmpassword = value,
-      decoration: buildInputDecoration("Confirm Password"),
+      validator: (value) => value.isEmpty ? "Please enter your surname" : null,
+      onSaved: (value) => _surname = value,
+      decoration: buildInputDecoration("Surname"),
     );
 
     var next = () {
       final form = formKey.currentState;
       if (form.validate()) {
         form.save();
-        Navigator.pushNamed(context, '/register2',
-            arguments: {'username': _username, 'password': _password});
-      } else {
-        // Flushbar(
-        //   title: "Invalid form",
-        //   message: "Please Complete the form properly",
-        //   duration: Duration(seconds: 10),
-        // ).show(context);
+        Navigator.pushNamed(context, '/register2', arguments: {
+          'username': _username,
+          'firstname': _firstname,
+          'lastname': _surname
+        });
       }
     };
 
@@ -130,49 +98,10 @@ class _Register1State extends State<Register1> {
                 SizedBox(height: 20.0),
                 usernameField,
                 SizedBox(height: 20.0),
-                passwordField,
+                firstnameField,
                 SizedBox(height: 20.0),
-                confirmpasswordField,
+                surnameField,
                 SizedBox(height: 20.0),
-                Text(
-                  "Your password must have:",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 12,
-                      fontFamily: "Montserrat",
-                      fontWeight: FontWeight.w600),
-                ),
-                SizedBox(height: 3.0),
-                Row(
-                  children: [
-                    Icon(Icons.check_circle_outline_rounded, size: 9.6),
-                    SizedBox(width: 10),
-                    Text(
-                      "8 to 20 characters",
-                      style: TextStyle(
-                          color: HexColor('#c7c7c7'),
-                          fontSize: 12,
-                          fontFamily: "Montserrat",
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 3.0),
-                Row(
-                  children: [
-                    Icon(Icons.check_circle_outline_rounded, size: 9.6),
-                    SizedBox(width: 10),
-                    Text(
-                      "Letter, number and special characters",
-                      style: TextStyle(
-                          color: HexColor('#c7c7c7'),
-                          fontSize: 12,
-                          fontFamily: "Montserrat",
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 25),
                 Center(
                   child: MaterialButton(
                     onPressed: next,

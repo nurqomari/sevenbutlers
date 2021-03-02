@@ -50,7 +50,7 @@ class _Login2State extends State<Login2> {
                   ),
                   SizedBox(height: 29.6),
                   Container(
-                    height: 241.2,
+                    height: 280,
                     width: 338.0,
                     color: Colors.transparent,
                     child: Container(
@@ -75,7 +75,7 @@ class _Login2State extends State<Login2> {
                                       )))
                             ],
                           ),
-                          SizedBox(height: 35),
+                          SizedBox(height: 20),
                           Center(
                             child: Visibility(
                               visible: state.data.onProgress,
@@ -97,7 +97,6 @@ class _Login2State extends State<Login2> {
                           ),
                           MaterialButton(
                             onPressed: () {
-                              // loginService.signInWithFacebook();
                               loginBloc.attemptSocialLogin("facebook");
                             },
                             textColor: Colors.white,
@@ -135,8 +134,7 @@ class _Login2State extends State<Login2> {
                           SizedBox(height: 10),
                           MaterialButton(
                             onPressed: () {
-                              // loginService.signInWithGoogle();
-                              loginBloc.attemptSocialLogin("google");
+                              // loginBloc.attemptSocialLogin("google");
                             },
                             textColor: Colors.white,
                             color: Colors.black,
@@ -169,10 +167,48 @@ class _Login2State extends State<Login2> {
                             shape: RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
+                          ),
+                          SizedBox(height: 10),
+                          MaterialButton(
+                            onPressed: () {
+                              // loginService.signInWithGoogle();
+                              loginBloc.attemptSocialLogin("google");
+                            },
+                            textColor: Colors.black,
+                            color: HexColor("#EAEAEA"),
+                            child: SizedBox(
+                                width: 250,
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                        padding: EdgeInsets.only(left: 40),
+                                        child: Image.asset(
+                                          "assets/images/google.png",
+                                          width: 13.2,
+                                          height: 16,
+                                        )),
+                                    Padding(
+                                      padding: EdgeInsets.only(left: 20),
+                                      child: Text(
+                                        "Log in with Google",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontFamily: "Montserrat",
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    )
+                                  ],
+                                )),
+                            height: 45,
+                            minWidth: 301.2,
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                           )
                         ])),
                   ),
-                  SizedBox(height: 80),
+                  SizedBox(height: 45),
                   Row(
                     children: [
                       Padding(
