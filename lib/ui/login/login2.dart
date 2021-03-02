@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sevenbutlers/ui/login/events/login_bloc.dart';
 import 'package:sevenbutlers/ui/login/events/login_state.dart';
 import 'package:sevenbutlers/utils/helpers/hex_color.dart';
-import 'package:sevenbutlers/utils/services/social_login_service.dart';
+// import 'package:sevenbutlers/utils/services/social_login_service.dart';
 
 class Login2 extends StatefulWidget {
   @override
@@ -14,8 +14,14 @@ class Login2 extends StatefulWidget {
 class _Login2State extends State<Login2> {
   LoginBloc loginBloc;
 
+  @override
+  void initState() {
+    super.initState();
+    loginBloc = BlocProvider.of<LoginBloc>(context);
+  }
+
   Widget build(BuildContext context) {
-    SocialLoginService loginService = new SocialLoginService();
+    // SocialLoginService loginService = new SocialLoginService();
     return Scaffold(
         body: Container(
             decoration: BoxDecoration(
@@ -27,7 +33,8 @@ class _Login2State extends State<Login2> {
                 child: BlocListener<LoginBloc, LoginState>(
                     listener: (context, state) {
               if (state.data.isLogin) {
-                Navigator.pushReplacementNamed(context, '/dashboard');
+                Navigator.pushNamedAndRemoveUntil(
+                    context, "/dashboard", (route) => false);
               }
             }, child: BlocBuilder<LoginBloc, LoginState>(
                         builder: (context, state) {
@@ -69,9 +76,29 @@ class _Login2State extends State<Login2> {
                             ],
                           ),
                           SizedBox(height: 35),
+                          Center(
+                            child: Visibility(
+                              visible: state.data.onProgress,
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                          Center(
+                            child: Visibility(
+                              visible: state.data.isError,
+                              child: Text(
+                                state.data.error ?? '',
+                                style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 12,
+                                    fontFamily: "Montserrat",
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
                           MaterialButton(
                             onPressed: () {
-                              loginService.signInWithFacebook();
+                              // loginService.signInWithFacebook();
+                              loginBloc.attemptSocialLogin("facebook");
                             },
                             textColor: Colors.white,
                             color: HexColor("#3b5998"),
@@ -108,7 +135,8 @@ class _Login2State extends State<Login2> {
                           SizedBox(height: 10),
                           MaterialButton(
                             onPressed: () {
-                              loginService.signInWithGoogle();
+                              // loginService.signInWithGoogle();
+                              loginBloc.attemptSocialLogin("google");
                             },
                             textColor: Colors.white,
                             color: Colors.black,

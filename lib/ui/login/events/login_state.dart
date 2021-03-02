@@ -5,6 +5,5 @@ class LoginState {
 
   LoginState(this.data);
 
-  factory LoginState.initial() =>
-      LoginState(LoginData(false, null, LoginError("", "")));
+  factory LoginState.initial() => LoginState(LoginData(false, null, "", false));
 }

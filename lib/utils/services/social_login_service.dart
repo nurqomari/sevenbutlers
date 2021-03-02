@@ -2,15 +2,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:sevenbutlers/domain/user.dart';
+import 'package:sevenbutlers/ui/login/data/login_data.dart';
 import 'package:sevenbutlers/utils/services/app_url.dart';
 import 'package:sevenbutlers/utils/services/session_manager.dart';
 
 class SocialLoginService {
   SessionManager session = new SessionManager();
-  Future<UserData> signInWithGoogle() async {
+  Future<LoginData> signInWithGoogle() async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
     final GoogleSignInAccount googleUser = await googleSignIn.signIn();
 
@@ -34,9 +34,11 @@ class SocialLoginService {
             loginData = response.data;
           } else {
             print("Error : " + response.data.toString());
+            return LoginData(false, null, response.data.toString(), true);
           }
         } catch (e) {
           print("Error : " + e.toString());
+          return LoginData(false, null, e.toString(), true);
         }
         user.access_token = loginData['access_token'];
         user.email = loginData['email'];
@@ -53,20 +55,18 @@ class SocialLoginService {
         user.token_type = loginData['token_type'];
         // user.username = loginData['username'];
         user.photo_url = googleUser.photoUrl;
-        session.setLogin(user);
-        return user;
+
+        LoginData loginInfo = LoginData(true, user, "", false);
+        return loginInfo;
       } else {
-        throw PlatformException(
-            code: 'ERROR_MISSING_GOOGLE_AUTH_TOKEN',
-            message: 'Missing Google Auth Token');
+        return LoginData(false, null, 'Missing Google Auth Token', true);
       }
     } else {
-      throw PlatformException(
-          code: 'ERROR_ABORTED_BY_USER', message: 'Sign in aborted by user');
+      return LoginData(false, null, 'Sign in aborted by user', true);
     }
   }
 
-  Future<UserData> signInWithFacebook() async {
+  Future<LoginData> signInWithFacebook() async {
     final FacebookLogin facebookLogin = FacebookLogin();
     final FacebookLoginResult result = await facebookLogin.logIn(['email']);
     if (result.accessToken != null) {
@@ -89,9 +89,11 @@ class SocialLoginService {
           loginData = response.data;
         } else {
           print("Error : " + response.data.toString());
+          return LoginData(false, null, response.data.toString(), true);
         }
       } catch (e) {
         print("Error : " + e.toString());
+        return LoginData(false, null, e.toString(), true);
       }
 
       final user = new UserData();
@@ -111,11 +113,10 @@ class SocialLoginService {
       user.token_type = loginData['token_type'];
       // user.username = loginData['username'];
       user.photo_url = profile['picture']['data']['url'];
-      session.setLogin(user);
-      return user;
+      LoginData loginInfo = LoginData(true, user, "", false);
+      return loginInfo;
     } else {
-      throw PlatformException(
-          code: 'ERROR_ABORTED_BY_USER', message: 'Sign in aborted by user');
+      return LoginData(false, null, 'Sign in aborted by user', true);
     }
   }
 

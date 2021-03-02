@@ -4,6 +4,7 @@ import 'package:sevenbutlers/ui/login/data/login_data.dart';
 import 'package:sevenbutlers/ui/login/events/login_event.dart';
 import 'package:sevenbutlers/ui/login/events/login_state.dart';
 import 'package:sevenbutlers/utils/services/session_manager.dart';
+import 'package:sevenbutlers/utils/services/social_login_service.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   @override
@@ -13,8 +14,45 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     add(AttemptLoginEvent(email, password));
   }
 
+  void attemptSocialLogin(String provider) {
+    add(AttemptSocialLoginEvent(provider));
+  }
+
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
+    if (event is AttemptSocialLoginEvent) {
+      final params = event;
+      SocialLoginService loginService = new SocialLoginService();
+      LoginData result;
+      result = LoginData.init();
+      result.onProgress = true;
+      yield LoginState(result);
+      if (params.provider == "facebook") {
+        final response = await loginService.signInWithFacebook();
+        if (response.isLogin) {
+          print("user data: " + response.data.toString());
+
+          result = LoginData(true, response.data, "", false);
+          SessionManager session = SessionManager();
+          session.setLogin(response.data);
+        } else {
+          result = response;
+        }
+      }
+      if (params.provider == "google") {
+        final response = await loginService.signInWithGoogle();
+        if (response.isLogin) {
+          print("user data: " + response.data.toString());
+
+          result = LoginData(true, response.data, "", false);
+          SessionManager session = SessionManager();
+          session.setLogin(response.data);
+        } else {
+          result = response;
+        }
+      }
+      yield LoginState(result);
+    }
     if (event is AttemptLoginEvent) {
       final params = event;
       bool isValid = true;
@@ -49,7 +87,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if (response.isLogin) {
           print("user data: " + response.data.toString());
 
-          result = LoginData(true, response.data, LoginError.init());
+          result = LoginData(true, response.data, "", false);
           SessionManager session = SessionManager();
           session.setLogin(response.data);
         } else {
@@ -58,7 +96,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
         yield LoginState(result);
       } else {
-        result = LoginData(false, null, error);
+        result = LoginData(false, null, "", false);
         yield LoginState(result);
       }
     }

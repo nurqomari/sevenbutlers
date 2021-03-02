@@ -3,16 +3,18 @@ import 'package:sevenbutlers/domain/user.dart';
 class LoginData {
   bool isLogin = false;
   UserData data;
-  LoginError error;
+  String error;
+  bool isError = false;
   bool onProgress = false;
 
-  LoginData(this.isLogin, this.data, this.error);
+  LoginData(this.isLogin, this.data, this.error, [this.isError]);
 
   LoginData.init() {
     isLogin = false;
     data = null;
-    error = LoginError.init();
+    error = "";
     onProgress = false;
+    isError = false;
   }
 }
 

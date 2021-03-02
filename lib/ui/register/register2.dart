@@ -34,7 +34,12 @@ class _Register2State extends State<Register2> {
 
     final emailField = TextFormField(
       autofocus: false,
-      validator: validateEmail,
+      validator: (value) {
+        String matchEmail = validateEmail(value);
+        if (matchEmail != "matched") {
+          return matchEmail;
+        }
+      },
       onSaved: (value) => _email = value,
       decoration: buildInputDecoration("Email Address"),
     );
@@ -68,7 +73,8 @@ class _Register2State extends State<Register2> {
         child: BlocListener<RegistrationBloc, RegistrationState>(
           listener: (context, state) {
             if (state.data.isRegister) {
-              Navigator.pushReplacementNamed(context, '/dashboard');
+              Navigator.pushNamedAndRemoveUntil(
+                  context, "/dashboard", (route) => false);
             }
           },
           child: BlocBuilder<RegistrationBloc, RegistrationState>(

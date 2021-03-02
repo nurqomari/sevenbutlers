@@ -34,11 +34,11 @@ class LoginApiProvider {
         else
           emailError = error;
 
-        return LoginData(false, null, LoginError(emailError, passwordError));
+        return LoginData(false, null, error, true);
       }
     } catch (e) {
       print("Error : " + e.toString());
-      return LoginData(false, null, LoginError("", "", e.toString()));
+      return LoginData(false, null, e.toString(), true);
     }
   }
 
