@@ -9,6 +9,7 @@ class LoginApp extends StatelessWidget {
     // SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: Theme.of(context).copyWith(
         primaryColor: HexColor('#64feab'),
         accentColor: HexColor('#64feab'),

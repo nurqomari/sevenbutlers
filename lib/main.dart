@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:sevenbutlers/config/routes/route_generator.dart';
+import 'package:flutter/services.dart';
 import 'package:sevenbutlers/ui/dashboard.dart';
 import 'package:sevenbutlers/ui/login/login1.dart';
 import 'package:sevenbutlers/utils/helpers/hex_color.dart';
 
-void main() {
-  runApp(LoginApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]).then((_) => runApp(LoginApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -13,6 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: Theme.of(context).copyWith(
         primaryColor: HexColor('#64feab'),
         accentColor: HexColor('#64feab'),
