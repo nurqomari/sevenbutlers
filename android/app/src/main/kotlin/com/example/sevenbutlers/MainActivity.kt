@@ -1,4 +1,4 @@
-package com.gibeon.sevenbutlers
+package com.sevenbutlers.dev
 
 import io.flutter.embedding.android.FlutterActivity
 

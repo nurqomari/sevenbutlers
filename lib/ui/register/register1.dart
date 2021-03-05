@@ -1,7 +1,5 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:sevenbutlers/utils/helpers/hex_color.dart';
-import 'package:sevenbutlers/utils/mixins/validators.dart';
 import 'package:sevenbutlers/widgets/widgets.dart';
 
 class Register1 extends StatefulWidget {

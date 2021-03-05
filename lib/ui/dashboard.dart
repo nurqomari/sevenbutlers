@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sevenbutlers/domain/user.dart';
 import 'package:sevenbutlers/utils/services/session_manager.dart';
+import 'package:sevenbutlers/utils/services/social_login_service.dart';
 
 class DashBoard extends StatefulWidget {
   @override
@@ -18,6 +19,8 @@ class _DashBoardState extends State<DashBoard> {
 
   void clearLogin() {
     SessionManager session = SessionManager();
+    SocialLoginService loginService = new SocialLoginService();
+    loginService.signOut();
     session.clear();
   }
 

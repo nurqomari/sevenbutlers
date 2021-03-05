@@ -6,7 +6,9 @@ import 'package:sevenbutlers/ui/login/login2.dart';
 import 'package:sevenbutlers/ui/login/login3.dart';
 import 'package:sevenbutlers/ui/logout.dart';
 import 'package:sevenbutlers/ui/register/events/register_bloc.dart';
+import 'package:sevenbutlers/ui/register/events/resend_verification_bloc.dart';
 import 'package:sevenbutlers/ui/register/register.dart';
+import 'package:sevenbutlers/ui/register/register3.dart';
 import 'package:sevenbutlers/ui/splash_screen/splash_screen_bloc.dart';
 import 'package:sevenbutlers/ui/splash_screen/splash_screen_page.dart';
 import 'package:sevenbutlers/ui/welcome.dart';
@@ -66,6 +68,14 @@ class RouteGenerator {
                     firstname: args['firstname'],
                     lastname: args['lastname'],
                   )));
+        return _errorRoute();
+
+      case "/register3":
+        if (args is Map)
+          return MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                  create: (BuildContext context) => ResendVerificationBloc(),
+                  child: Register3(email: args['email'])));
         return _errorRoute();
 
       case "/dashboard":

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:sevenbutlers/ui/register/data/register_data.dart';
+import 'package:sevenbutlers/ui/register/data/resend_verification_data.dart';
 import 'package:sevenbutlers/utils/services/app_url.dart';
 
 class RegisterApiProvider {
@@ -30,6 +31,29 @@ class RegisterApiProvider {
       }
     } catch (e) {
       return RegistrationData(false, e.toString(), true);
+    }
+  }
+
+  Future<ResendVerificationData> resendVerification(String email) async {
+    final Map<String, dynamic> data = {
+      'email': email,
+    };
+
+    var dio = new Dio();
+    try {
+      Response response = await dio.post(AppUrl.resendVerification,
+          data: data,
+          options: new Options(contentType: Headers.jsonContentType));
+
+      if (response.data["status"] == "Success") {
+        return ResendVerificationData(true, response.data.toString(), false);
+      } else {
+        Map json = response.data;
+        String error = json['message'].toString();
+        return ResendVerificationData(false, error, true);
+      }
+    } catch (e) {
+      return ResendVerificationData(false, e.toString(), true);
     }
   }
 }

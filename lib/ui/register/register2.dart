@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sevenbutlers/ui/register/events/register_bloc.dart';
@@ -96,7 +95,8 @@ class _Register2State extends State<Register2> {
           listener: (context, state) {
             if (state.data.isRegister) {
               Navigator.pushNamedAndRemoveUntil(
-                  context, "/dashboard", (route) => false);
+                  context, "/register3", (route) => false,
+                  arguments: {'email': _email});
             }
           },
           child: BlocBuilder<RegistrationBloc, RegistrationState>(

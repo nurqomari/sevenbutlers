@@ -5,7 +5,8 @@ class AppUrl {
 
   static const String baseURL = liveBaseURL;
   static const String login = "https://favorestodevapi.azurewebsites.net/token";
-  static const String register = baseURL + "/register";
+  static const String register = baseURL + "register";
+  static const String resendVerification = baseURL + "activation/resend";
   static const String socialLogin = baseURL + "account/token";
-  static const String forgotPassword = baseURL + "/forgot-password";
+  static const String forgotPassword = baseURL + "forgot-password";
 }

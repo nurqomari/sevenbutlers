@@ -18,27 +18,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
   Stream<RegistrationState> mapEventToState(RegistrationEvent event) async* {
     if (event is AttemptRegisterEvent) {
       final params = event;
-      // bool isValid = true;
-      // LoginError error = LoginError("", "");
       RegistrationData result;
-
-      // if (params.email.isEmpty) {
-      //   error.emailError = "Email address is required!";
-      //   isValid = false;
-      // }
-
-      // if (params.email.isNotEmpty && !isEmailValid(params.email)) {
-      //   error.emailError =
-      //       "The format email is incorrect. Please check the email address and try again";
-      //   isValid = false;
-      // }
-
-      // if (params.password.isEmpty) {
-      //   error.passwordError = "Password is required!";
-      //   isValid = false;
-      // }
-
-      // if (isValid) {
       result = RegistrationData.init();
       result.onProgress = true;
       yield RegistrationState(result);
@@ -59,9 +39,6 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       }
 
       yield RegistrationState(result);
-      // } else {
-      //   result = RegistrationData(false, null);
-      //   yield RegistrationState(result);
     }
   }
 }

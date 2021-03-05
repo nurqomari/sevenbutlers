@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:convert';
@@ -20,7 +19,7 @@ class SocialLoginService {
       if (googleAuth.accessToken != null) {
         final user = new UserData();
         final Map<String, dynamic> data = {
-          'provider': 'google',
+          'provider': 'google-v.1',
           'access_token': googleAuth.accessToken
         };
         var dio = new Dio();
