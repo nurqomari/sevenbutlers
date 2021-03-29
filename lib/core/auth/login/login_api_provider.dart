@@ -15,6 +15,7 @@ class LoginApiProvider {
       'client_id': '64001261-259A-4BB9-A60E-2179DF74FC58'
     };
     var dio = new Dio();
+    dio.options.headers['Access-Control-Allow-Origin'] = true;
     try {
       Response response = await dio.post(AppUrl.login,
           data: loginData,

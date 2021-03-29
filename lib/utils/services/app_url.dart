@@ -9,4 +9,5 @@ class AppUrl {
   static const String resendVerification = baseURL + "activation/resend";
   static const String socialLogin = baseURL + "account/token";
   static const String forgotPassword = baseURL + "forgot-password";
+  static const String merchants = baseURL + "merchant";
 }
