@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:mapbox_search/mapbox_search.dart';
 import 'package:sevenbutlers/domain/merchant.dart';
 import 'package:sevenbutlers/utils/services/app_url.dart';
 
@@ -30,6 +31,12 @@ class _MapWidgetState extends State<MapWidget> {
   Completer<GoogleMapController> _controller = Completer();
   List<Marker> allMarkers = <Marker>[];
   var currentAddress = '';
+  TextEditingController searchController = TextEditingController();
+  PlacesSearch placesSearch;
+  List<MapBoxPlace> placePred = [];
+  MapBoxPlace mapboxPredictions;
+  dynamic lat;
+  dynamic lng;
 
   Future<void> _goToLocation(lat, lng) async {
     setState(() {
@@ -50,19 +57,6 @@ class _MapWidgetState extends State<MapWidget> {
         allMarkers.add(marker);
       });
     }
-    // Merchant _merchants = await getMerchants();
-    // for (var _merchant in _merchants) {
-    // Marker marker = await getMarker(_merchants.toMap());
-    // setState(() {
-    //   allMarkers.add(marker);
-    // });
-    // getMarker(_merchants.toMap()).then((marker) {
-    //   setState(() {
-    //     allMarkers.add(marker);
-    //   });
-    // });
-    // );
-    // }
   }
 
   void _getLocation(BuildContext context, {locale = 'nl'}) async {
@@ -192,22 +186,68 @@ class _MapWidgetState extends State<MapWidget> {
     // }
   }
 
-  // @override
-  // void initState() {
-  //   // _con.currentRestaurant = widget.routeArgument?.param as Restaurant;
-  //   // if (_con.currentRestaurant?.latitude != null) {
-  //   //   // user select a restaurant
-  //   //   _con.getRestaurantLocation();
-  //   //   _con.getDirectionSteps();
-  //   // } else {
-  //   //   _con.getCurrentLocation();
-  //   // }
-  //   // cameraPosition = CameraPosition(
-  //   //   target: LatLng(-7.23333, 112.73333),
-  //   //   zoom: 4,
-  //   // );
-  //   super.initState();
+  // void setMapBoxKey() async {
+  //   http.get(mapboxUri).then((value) {
+  //     if (value.statusCode == 200) {
+  //       MapBoxApiKey googleMapD = MapBoxApiKey.fromJson(jsonDecode(value.body));
+  //       if ('${googleMapD.status}' == '1') {
+  //         setState(() {
+  //           placesSearch = PlacesSearch(
+  //             apiKey: '${googleMapD.data.mapboxApi}',
+  //             country: 'id',
+  //             limit: 15,
+  //           );
+  //         });
+  //       }
+  //     }
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //   }).catchError((e) {
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //   });
   // }
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      placesSearch = PlacesSearch(
+        apiKey:
+            'pk.eyJ1IjoibnVycW9tYXJpIiwiYSI6ImNrbW85dHd0dzIyZDcyd3FvNm9ucXZmbnQifQ.QLzoDVLLJeMhpZiLOe3IdA',
+        country: 'nl',
+        limit: 5,
+      );
+    });
+    searchController.addListener(() async {
+      if (searchController.text != null && searchController.text.length > 0) {
+        if (placesSearch != null) {
+          placesSearch.getPlaces(searchController.text).then((value) {
+            if (searchController.text != null &&
+                searchController.text.length > 0) {
+              setState(() {
+                placePred.clear();
+                placePred = List.from(value);
+                print(value[0].placeName);
+                print(
+                    '${value[0].geometry.coordinates[0]} ${value[0].geometry.coordinates[1]}');
+              });
+            } else {
+              setState(() {
+                placePred.clear();
+              });
+            }
+          }).catchError((e) {
+            setState(() {
+              placePred.clear();
+            });
+          });
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -258,6 +298,91 @@ class _MapWidgetState extends State<MapWidget> {
               // _con.getRestaurantsOfArea();
             },
           ),
+          Positioned(
+              top: 10,
+              width: MediaQuery.of(context).size.width,
+              child: Column(children: [
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.75,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                        hintText: "Enter Zip Code",
+                        counterText: '',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        contentPadding: EdgeInsets.only(
+                          top: 2,
+                          left: 10, // HERE THE IMPORTANT PART
+                        )),
+                    controller: searchController,
+                  ),
+                ),
+                Visibility(
+                  visible: (placePred != null && placePred.length > 0),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.75,
+                    // color: kWhiteColor,
+                    height: 300,
+                    margin: EdgeInsets.only(top: 0),
+                    padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 0),
+                    child: ListView.builder(
+                      itemCount: placePred.length,
+                      shrinkWrap: true,
+                      primary: true,
+                      scrollDirection: Axis.vertical,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              mapboxPredictions = placePred[index];
+                              lng = mapboxPredictions.geometry.coordinates[0];
+                              lat = mapboxPredictions.geometry.coordinates[1];
+                              searchController.clear();
+                              placePred.clear();
+                            });
+                            _goToLocation(lat, lng);
+                          },
+                          behavior: HitTestBehavior.opaque,
+                          child: Container(
+                            color: Colors.white,
+                            padding: EdgeInsets.all(10.0),
+                            child: Row(
+                              children: <Widget>[
+                                Image.asset(
+                                  'assets/images/map_pin.png',
+                                  scale: 3,
+                                ),
+                                SizedBox(
+                                  width: 16.0,
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    '${placePred[index].placeName}',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context).textTheme.caption,
+                                    maxLines: 2,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                      // separatorBuilder: (context, index) {
+                      //   return Divider(
+                      //     thickness: 1,
+                      //     color: Colors.grey,
+                      //   );
+                      // },
+                    ),
+                  ),
+                ),
+              ]))
         ],
       ),
     );

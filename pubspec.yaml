@@ -42,6 +42,7 @@ dependencies:
   google_maps_flutter: 1.0.3
   geolocator: ^6.0.0+4
   geocoder: ^0.2.1
+  mapbox_search: ^2.1.0
 
 dev_dependencies:
   flutter_test:
