@@ -4,6 +4,7 @@ import 'package:sevenbutlers/domain/user.dart';
 import 'package:sevenbutlers/ui/splash_screen/splash_screen_bloc.dart';
 import 'package:sevenbutlers/ui/splash_screen/splash_screen_event.dart';
 import 'package:sevenbutlers/ui/splash_screen/splash_screen_state.dart';
+import 'package:sevenbutlers/ui/walkthrough/intro.dart';
 import 'package:sevenbutlers/utils/services/session_manager.dart';
 
 class SplashScreenPage extends StatefulWidget {
@@ -13,9 +14,23 @@ class SplashScreenPage extends StatefulWidget {
 
 class _SplashScreenPageState extends State<SplashScreenPage> {
   SplashScreenBloc bloc;
+  Future<bool> checkFirstTime() async {
+    SessionManager session = SessionManager();
+    // await session.setFirstTime(false);
+    bool firstTime = await session.isFirstTime();
+    if (firstTime) {
+      return true;
+    } else {
+      await session.setFirstTime(true);
+      Navigator.of(context).pushReplacement(
+          new MaterialPageRoute(builder: (context) => new Intro()));
+      return true;
+    }
+  }
 
   @override
   void initState() {
+    checkFirstTime();
     bloc = BlocProvider.of<SplashScreenBloc>(context);
     bloc.add(RefreshToken());
     super.initState();

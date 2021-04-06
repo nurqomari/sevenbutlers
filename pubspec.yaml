@@ -43,6 +43,7 @@ dependencies:
   geolocator: ^6.0.0+4
   geocoder: ^0.2.1
   mapbox_search: ^2.1.0
+  step_progress_indicator: ^0.1.1+2
 
 dev_dependencies:
   flutter_test:

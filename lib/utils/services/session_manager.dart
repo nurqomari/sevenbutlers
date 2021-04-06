@@ -21,6 +21,8 @@ class SessionManager {
 
   static const String KEY_IS_LOGGED_IN = "is_logged_in";
 
+  static const String KEY_IS_FIRST_TIME = "is_first_time";
+
   static const String KEY_REGISRATION_FIRST_NAME = "firstname";
   static const String KEY_REGISRATION_LAST_NAME = "lastname";
   static const String KEY_REGISRATION_EMAIL = "email";
@@ -67,12 +69,27 @@ class SessionManager {
       return data;
     } catch (e) {
       print(e);
+      return null;
     }
   }
 
   Future<bool> isLoggedIn() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getBool(KEY_IS_LOGGED_IN);
+  }
+
+  Future<bool> setFirstTime(bool first) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(KEY_IS_FIRST_TIME, first);
+    return true;
+  }
+
+  Future<bool> isFirstTime() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool(KEY_IS_FIRST_TIME) == null) {
+      await prefs.setBool(KEY_IS_FIRST_TIME, false);
+    }
+    return prefs.getBool(KEY_IS_FIRST_TIME);
   }
 
   void setRegistrationData(
@@ -85,8 +102,22 @@ class SessionManager {
 
   Future<bool> clear() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.clear();
-    print("clear shared preferences");
+    prefs.remove("access_token");
+    prefs.remove("token_type");
+    prefs.remove("expires_in");
+    prefs.remove("refresh_token");
+    prefs.remove("name");
+    prefs.remove("first_name");
+    prefs.remove("last_name");
+    prefs.remove("username");
+    prefs.remove("email");
+    prefs.remove("phone_number");
+    prefs.remove("photo_url");
+    prefs.remove("identifier");
+    prefs.remove("language");
+    prefs.remove("issued");
+    prefs.remove("expires");
+    print("clear user preferences");
     return true;
   }
 }
